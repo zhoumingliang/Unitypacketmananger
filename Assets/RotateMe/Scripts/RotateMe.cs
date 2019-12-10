@@ -11,7 +11,7 @@ namespace Coffee.RotateMe
 			transform.localRotation = rot * transform.localRotation;
 			Debug.Log("hogehogehoge");
 			Debug.Log("fugafugas");
-			Debug.Log("fix bugs");
+			Debug.Log("fix bugs1");
 		}
 	}
 }
