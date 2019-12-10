@@ -1,0 +1,49 @@
+{
+	"name": "com.coffee.rotate-me",
+	"displayName": "Rotate Me",
+	"description": "Rotate the object!",
+	"version": "0.1.0",
+	"unity": "2018.3",
+	"license": "MIT",
+	"src": "Assets/RotateMe",
+	"dependencies": {},
+	"devDependencies": {
+		"@semantic-release/changelog": "*",
+		"@semantic-release/exec": "*",
+		"@semantic-release/git": "*",
+		"semantic-release": "^16.0.0-beta.22"
+	},
+	"scripts": {
+		"release": "SRC=$npm_package_src REV=`git rev-parse HEAD` BRANCH=`git rev-parse --abbrev-ref @` semantic-release"
+	},
+	"release": {
+		"ci": false,
+		"tagFormat": "${version}",
+		"plugins": [
+			"@semantic-release/commit-analyzer",
+			"@semantic-release/release-notes-generator",
+			"@semantic-release/changelog",
+			[
+				"@semantic-release/npm",
+				{
+					"npmPublish": false
+				}
+			],
+			[
+				"@semantic-release/exec",
+				{
+					"verifyConditionsCmd": "git subtree split --rejoin --prefix=$SRC -b upm && git checkout upm",
+					"prepareCmd": "git add CHANGELOG.md package.json && git commit -m 'chore(release): ${nextRelease.version}\n\n${nextRelease.notes}'",
+					"successCmd": "git checkout -f -B $BRANCH && git subtree merge --prefix=$SRC upm -m 'Release ${nextRelease.version}'",
+					"failCmd": "git checkout -f -B $BRANCH && git reset --hard $REV"
+				}
+			],
+			[
+				"@semantic-release/github",
+				{
+					"failComment": false
+				}
+			]
+		]
+	}
+}
